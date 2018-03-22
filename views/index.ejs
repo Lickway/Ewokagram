@@ -1,17 +1,20 @@
 <% include partials/header.ejs %>
 
   <body>
+    <div class="container">
     <% for(let i = 0; i < data.length; i++) {%>
-      <%=(i + 1)%>.
-      <img src="images/<%= data[i].image_url %>">
+      <div>
+      <img src="/assets/images/<%= data[i].image_url %>">
 
       <h3><%= data[i].caption %></h3>
       <a href="/post/<%=data[i].id%>/edit">
         <button>Edit</button>
       </a>
       <form method="POST" action="/post/<%=data[i].id%>?_method=DELETE">
-<button type="submit">Delete</button>
-</form>
+        <button type="submit">Delete</button>
+      </form>
+    </div>
     <% } %>
+  </div>
   </body>
 </html>

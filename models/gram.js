@@ -7,7 +7,7 @@ const Gram = {};
 // select all posts
 Gram.viewAll = () => db.any("SELECT * FROM posts");
 // show one post
-Gram.getPost = id => db.one("SELECT * FROM posts WHERE id = $1", [id]);
+Gram.viewPost = id => db.one("SELECT * FROM posts WHERE id = $1", [id]);
 
 // add a new post
 Gram.createPost = data =>

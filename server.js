@@ -6,7 +6,8 @@ const Gram = require("./models/gram");
 const app = express();
 const methodOverride = require("method-override");
 
-app.use(express.static(`${__dirname}/assets/`));
+app.use("/assets", express.static("./assets/"));
+// app.use(express.static(`${__dirname}/assets/`));
 
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
@@ -26,6 +27,14 @@ app.post("/register", urlencodedParser, (request, response) => {
   const userRegistrationData = request.body;
   Gram.registerUser(userRegistrationData).then(userData => {
     response.redirect(`/tasks`);
+  });
+});
+
+// get one post
+app.get("/post/:id", (request, response) => {
+  const postId = parseInt(request.params.id);
+  Gram.viewPost(postId).then(postData => {
+    response.render("show", { postData });
   });
 });
 
