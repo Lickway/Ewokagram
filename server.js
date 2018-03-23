@@ -5,7 +5,7 @@ const Gram = require("./models/gram");
 // const bcrypt = require("bcrypt");
 const multer = require("multer");
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "client/images/" });
 
 const app = express();
 const methodOverride = require("method-override");
@@ -54,15 +54,20 @@ app.get("/post/:id", (request, response) => {
 });
 
 // create post
-app.get("/profile/new", upload.single("image"), (request, response) => {
+app.get("/profile/new", (request, response) => {
   response.render("new.ejs");
 });
-app.post("/profile/new", urlencodedParser, (request, response) => {
-  const newPostData = request.body;
-  Gram.createPost(newPostData).then(postData => {
-    response.redirect(`/post/${postData.id}`);
-  });
-});
+app.post(
+  "/profile/new",
+  urlencodedParser,
+  upload.single("userFile"),
+  (request, response) => {
+    const newPostData = request.body;
+    Gram.createPost(newPostData).then(postData => {
+      response.redirect("/");
+    });
+  }
+);
 
 // edit post
 app.get("/post/:id/edit", (request, response) => {
