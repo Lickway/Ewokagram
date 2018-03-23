@@ -4,8 +4,9 @@
     <div class="container">
     <% for(let i = 0; i < data.length; i++) {%>
       <div>
-      <img src="/assets/images/<%= data[i].image_url %>">
-
+      <a href ="/post/<%= data[i].id %>">
+      <img src="/client/images/<%= data[i].image_url %>">
+    </a>
       <h3><%= data[i].caption %></h3>
       <a href="/post/<%=data[i].id%>/edit">
         <button>Edit</button>

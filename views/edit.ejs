@@ -1,0 +1,33 @@
+<% include partials/header.ejs %>
+
+  <body>
+    <div class="editContainer">
+     <img src="/client/images/<%= post.image_url %>" alt="User Photo">
+    <form class="form-horizontal" action="/post/<%=post.id%>?_method=PUT" method="post">
+      <fieldset>
+
+      <!-- Form Name -->
+      <legend>Edit Post</legend>
+
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="caption">caption</label>
+        <div class="col-md-4">
+        <input id="subject" name="subject" type="text" value = "<%=post.caption%>" placeholder="caption" class="form-control input-md">
+
+        </div>
+      </div>
+
+      <!-- Button -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="submit"></label>
+        <div class="col-md-4">
+          <button id="submit" name="edit" class="btn btn-success">Edit</button>
+        </div>
+      </div>
+
+      </fieldset>
+    </form>
+  </div>
+  </body>
+</html>
