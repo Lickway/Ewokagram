@@ -4,6 +4,8 @@ const Gram = {};
 
 // select all posts
 Gram.viewAll = () => db.any("SELECT * FROM posts ORDER BY id ASC");
+// user profile
+Gram.profile = () => db.any("SELECT * FROM posts ORDER BY id ASC");
 // show one post
 Gram.viewPost = id => db.one("SELECT * FROM posts WHERE id = $1", [id]);
 

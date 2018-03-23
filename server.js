@@ -3,6 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Gram = require("./models/gram");
 // const bcrypt = require("bcrypt");
+const multer = require("multer");
+
+const upload = multer({ dest: "uploads/" });
 
 const app = express();
 const methodOverride = require("method-override");
@@ -35,11 +38,29 @@ app.post("/register", urlencodedParser, (request, response) => {
   });
 });
 
+// show profile
+app.get("/profile", (request, response) => {
+  Gram.profile().then(data => {
+    response.render("profile", { data });
+  });
+});
+
 // get one post
 app.get("/post/:id", (request, response) => {
   const postId = Number(request.params.id);
   Gram.viewPost(postId).then(postData => {
     response.render("show", { postData });
+  });
+});
+
+// create post
+app.get("/profile/new", upload.single("image"), (request, response) => {
+  response.render("new.ejs");
+});
+app.post("/profile/new", urlencodedParser, (request, response) => {
+  const newPostData = request.body;
+  Gram.createPost(newPostData).then(postData => {
+    response.redirect(`/post/${postData.id}`);
   });
 });
 
