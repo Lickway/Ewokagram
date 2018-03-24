@@ -47,5 +47,15 @@ img {
   justify-content: center;
 }
 .addPostContainer {
+  display: flex;
+  justify-content: center;
   margin-top: 10%;
+}
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 20%;
+  margin-left: 30%;
+  margin-right: 30%;
 }
