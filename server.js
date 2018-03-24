@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const Gram = require("./models/gram");
 // const bcrypt = require("bcrypt");
+const path = require("path");
 const multer = require("multer");
 
 const upload = multer({ dest: "client/images/" });
@@ -54,20 +55,42 @@ app.get("/post/:id", (request, response) => {
 });
 
 // create post
-app.get("/profile/new", (request, response) => {
-  response.render("new.ejs");
+app.get("/profile/new", (req, res) => {
+  res.render("new");
 });
-app.post(
-  "/profile/new",
-  urlencodedParser,
-  upload.single("userFile"),
-  (request, response) => {
-    const newPostData = request.body;
-    Gram.createPost(newPostData).then(postData => {
-      response.redirect("/");
-    });
+
+const storage = multer.diskStorage({
+  destination(req, file, callback) {
+    callback(null, "./client/images");
+  },
+  filename(req, file, callback) {
+    callback(
+      null,
+      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+    );
   }
-);
+});
+
+app.post("/profile/new", (request, response) => {
+  const upload = multer({
+    storage,
+    fileFilter(request, file, callback) {
+      const ext = path.extname(file.originalname);
+      if (
+        ext !== ".png" &&
+        ext !== ".jpg" &&
+        ext !== ".gif" &&
+        ext !== ".jpeg"
+      ) {
+        return callback(response.end("Only images are allowed"), null);
+      }
+      callback(null, true);
+    }
+  }).single("userFile");
+  upload(request, response, err => {
+    response.render("profile");
+  });
+});
 
 // edit post
 app.get("/post/:id/edit", (request, response) => {

@@ -1,9 +1,9 @@
 <% include partials/header.ejs %>
   <body>
     <div class="addPostContainer">
-      <form action="/" method="post">
-  <input type="file" name="userFile" accept="image/*">
-  <input type="submit">
+      <form id="uploadForm" enctype="multipart/form-data" method="post">
+  <input type="file" name="userFile" />
+  <input type="submit" value="Upload File" name="submit">
 </form>
     </div>
   </body>
