@@ -23,11 +23,11 @@ Gram.deletePost = id => db.result("DELETE FROM posts WHERE id = $1", [id]);
 Gram.updatePost = (id, post) =>
   db.none("UPDATE posts SET caption = $1 WHERE id = $2", [post.caption, id]);
 
-// add user to DATABASE
-Gram.registerUser = data =>
-  db.one(
-    "INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING id",
-    [data.username, data.email, data.password]
-  );
+// // add user to DATABASE
+// Gram.registerUser = data =>
+//   db.one(
+//     "INSERT INTO users(username, password) VALUES($1, $2) RETURNING id",
+//     [data.username, data.email, data.password]
+//   );
 
 module.exports = Gram;

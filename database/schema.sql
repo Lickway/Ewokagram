@@ -2,13 +2,12 @@ CREATE DATABASE ewokagram;
 
 \c ewokagram
 
-DROP TABLE tasks;
+DROP TABLE users;
 
 CREATE TABLE users (
   id BIGSERIAL PRIMARY KEY,
-	username VARCHAR (15),
-  email VARCHAR(100),
-  password VARCHAR(60)
+	username VARCHAR (255),
+  password VARCHAR(255)
 );
 
 CREATE TABLE posts (

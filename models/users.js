@@ -7,9 +7,9 @@ User.findUser = username =>
   db.one("SELECT * FROM users WHERE username =$1", [username]);
 
 // add a user
-User.addUser = (data, hasPass) =>
+User.addUser = (usernameEntered, passwordSent) =>
   db.one(
-    "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id",
-    [data.username, hashPass]
+    "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
+    [usernameEntered, passwordSent]
   );
 module.exports = User;

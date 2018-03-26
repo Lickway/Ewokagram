@@ -56,9 +56,10 @@ app.post("/login", urlencodedParser, (request, response) => {
   User.findUser(request.body.username).then(user => {
     // get password entered from user
     const passwordEntered = request.body.password;
-    const isMatch = bcrypt.compareSync(passwordEntered, user.password);
+    // const isMatch = passwordEntered === user.password;
+    const isMatch = bcrypt.hashSync(passwordEntered, user.password);
     // checks username password isMatch
-    if (request.body.username === user.name && isMatch) {
+    if (request.body.username === user.username && isMatch) {
       request.session.authenticated = true;
       response.redirect("/");
     } else {
@@ -73,13 +74,14 @@ app.get("/register", (request, response) => {
   message = "";
   response.render("register", { message });
 });
-app.post("register", urlencodedParser, (request, response) => {
+app.post("/register", urlencodedParser, (request, response) => {
   const data = request.body;
+  const usernameEntered = data.username;
   const passwordEntered = data.password;
   // salt and hash
   const passwordSent = bcrypt.hashSync(passwordEntered, salt);
-  // add user to DATABASE
-  User.addUser(data, passwordSent).then(response.redirect("/"));
+  // // add user to DATABASE
+  User.addUser(usernameEntered, passwordSent).then(response.redirect("/"));
 });
 
 // home page
@@ -88,12 +90,12 @@ app.get("/", requireLogin, (request, response) => {
     response.render("index", { data });
   });
 });
-app.post("/register", urlencodedParser, (request, response) => {
-  const userRegistrationData = request.body;
-  Gram.registerUser(userRegistrationData).then(userData => {
-    response.redirect(`/profile`);
-  });
-});
+// app.post("/register", urlencodedParser, (request, response) => {
+//   const userRegistrationData = request.body;
+//   User.addUser(userRegistrationData).then(userData => {
+//     response.redirect(`/profile`);
+//   });
+// });
 
 // show profile
 app.get("/profile", requireLogin, (request, response) => {
