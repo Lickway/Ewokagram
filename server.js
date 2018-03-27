@@ -87,20 +87,6 @@ app.post("/register", urlencodedParser, (request, response) => {
   User.addUser(usernameEntered, passwordSent).then(response.redirect("/"));
 });
 
-// home page
-app.get("/", (request, response) => {
-  Gram.viewAll().then(data => {
-    response.render("index", { data });
-  });
-});
-
-// show profile
-app.get("/profile", (request, response) => {
-  Gram.profile().then(data => {
-    response.render("profile", { data });
-  });
-});
-
 // get one post
 app.get("/post/:id", (request, response) => {
   const postId = Number(request.params.id);
@@ -112,10 +98,6 @@ app.get("/post/:id", (request, response) => {
 app.get("/profile/new", (request, response) => {
   response.render("new");
 });
-app.post("/save-details", (request, response) => {
-  // console.log(req);
-});
-
 // create post using S3
 app.get("/sign-s3", (request, response) => {
   const s3 = new aws.S3();
@@ -143,6 +125,24 @@ app.get("/sign-s3", (request, response) => {
     };
     response.write(JSON.stringify(returnData));
     response.end();
+  });
+});
+app.post("/save-details", (request, response) => {
+  response.render("new");
+  // console.log(req);
+});
+
+// home page
+app.get("/", (request, response) => {
+  Gram.viewAll().then(data => {
+    response.render("index", { data });
+  });
+});
+
+// show profile
+app.get("/profile", (request, response) => {
+  Gram.profile().then(data => {
+    response.render("profile", { data });
   });
 });
 
