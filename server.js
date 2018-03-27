@@ -4,12 +4,13 @@ const bodyParser = require("body-parser");
 const Gram = require("./models/gram");
 const User = require("./models/users");
 const bcrypt = require("bcrypt");
+const aws = require("aws-sdk");
 
 // const salt = bcrypt.genSaltSync(10);
 const path = require("path");
-const multer = require("multer");
+// const multer = require("multer");
 
-const upload = multer({ dest: "client/images/" });
+// const upload = multer({ dest: "client/images/" });
 
 const app = express();
 const methodOverride = require("method-override");
@@ -24,6 +25,8 @@ app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
 const PORT = 3000;
+const ewokagram = "ewokagram";
+aws.config.region = "us-east-1";
 const jsonParser = bodyParser.json();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(
@@ -85,73 +88,101 @@ app.post("/register", urlencodedParser, (request, response) => {
 });
 
 // home page
-app.get("/", requireLogin, (request, response) => {
+app.get("/", (request, response) => {
   Gram.viewAll().then(data => {
     response.render("index", { data });
   });
 });
-// app.post("/register", urlencodedParser, (request, response) => {
-//   const userRegistrationData = request.body;
-//   User.addUser(userRegistrationData).then(userData => {
-//     response.redirect(`/profile`);
-//   });
-// });
 
 // show profile
-app.get("/profile", requireLogin, (request, response) => {
+app.get("/profile", (request, response) => {
   Gram.profile().then(data => {
     response.render("profile", { data });
   });
 });
 
 // get one post
-app.get("/post/:id", requireLogin, (request, response) => {
+app.get("/post/:id", (request, response) => {
   const postId = Number(request.params.id);
   Gram.viewPost(postId).then(postData => {
     response.render("show", { postData });
   });
 });
 
-// create post
-app.get("/profile/new", requireLogin, (req, res) => {
-  res.render("new");
+app.get("/profile/new", (request, response) => {
+  response.render("new");
+});
+app.post("/save-details", (request, response) => {
+  // console.log(req);
 });
 
-const storage = multer.diskStorage({
-  destination(req, file, callback) {
-    callback(null, "./client/images");
-  },
-  filename(req, file, callback) {
-    callback(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  }
-});
-
-app.post("/profile/new", (request, response) => {
-  const upload = multer({
-    storage,
-    fileFilter(request, file, callback) {
-      const ext = path.extname(file.originalname);
-      if (
-        ext !== ".png" &&
-        ext !== ".jpg" &&
-        ext !== ".gif" &&
-        ext !== ".jpeg"
-      ) {
-        return callback(response.end("Only images are allowed"), null);
-      }
-      callback(null, true);
+// create post using S3
+app.get("/sign-s3", (request, response) => {
+  const s3 = new aws.S3();
+  const fileName = request.query["file-name"];
+  const fileType = request.query["file-type"];
+  const s3Params = {
+    Bucket: ewokagram,
+    Key: fileName,
+    Expires: 60,
+    ContentType: fileType,
+    ACL: "public-read"
+  };
+  aws.config.update({
+    accessKeyId: "AKIAJIGYGVSRF2UVYL6A",
+    secretAccessKey: "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"
+  });
+  s3.getSignedUrl("putObject", s3Params, (err, data) => {
+    if (err) {
+      console.log("ERROR!!", err);
+      return response.end();
     }
-  }).single("userFile");
-  upload(request, response, err => {
-    response.render("profile");
+    const returnData = {
+      signedRequest: data,
+      url: `https://${ewokagram}.s3.amazonaws.com/${fileName}`
+    };
+    response.write(JSON.stringify(returnData));
+    response.end();
   });
 });
 
+// using multer
+//
+// const storage = multer.diskStorage({
+//   destination(req, file, callback) {
+//     callback(null, "./client/images");
+//   },
+//   filename(req, file, callback) {
+//     callback(
+//       null,
+//       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+//     );
+//   }
+// });
+//
+// app.post("/profile/new", (request, response) => {
+//   const upload = multer({
+//     storage,
+//     fileFilter(request, file, callback) {
+//       const ext = path.extname(file.originalname);
+//       if (
+//         ext !== ".png" &&
+//         ext !== ".jpg" &&
+//         ext !== ".gif" &&
+//         ext !== ".jpeg"
+//       ) {
+//         return callback(response.end("Only images are allowed"), null);
+//       }
+//       callback(null, true);
+//     }
+//   }).single("userFile");
+//   upload(request, response, err => {
+//     response.render("profile");
+//   });
+// });
+
 // edit post
-app.get("/post/:id/edit", requireLogin, (request, response) => {
+app.get("/post/:id/edit", (request, response) => {
   const id = Number(request.params.id);
   Gram.viewPost(id).then(post => {
     response.render("edit.ejs", { post });
@@ -167,7 +198,7 @@ app.put("/post/:id", urlencodedParser, (request, response) => {
 });
 
 // delete post
-app.delete("/post/:id", urlencodedParser, requireLogin, (request, response) => {
+app.delete("/post/:id", urlencodedParser, (request, response) => {
   const postIdToDelete = Number(request.params.id);
   Gram.deletePost(postIdToDelete).then(postData => {
     response.redirect("/");
