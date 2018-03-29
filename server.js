@@ -24,7 +24,7 @@ app.use("/client", express.static("./client/"));
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const ewokagram = "ewokagram";
 aws.config.region = "us-east-1";
 const jsonParser = bodyParser.json();

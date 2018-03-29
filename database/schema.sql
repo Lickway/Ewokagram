@@ -1,8 +1,8 @@
-CREATE DATABASE ewokagram;
-
-\c ewokagram
-
-DROP TABLE users;
+-- CREATE DATABASE ewokagram;
+--
+-- \c ewokagram
+--
+-- DROP TABLE users;
 
 CREATE TABLE users (
   id BIGSERIAL PRIMARY KEY,

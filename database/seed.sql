@@ -1,4 +1,4 @@
-\c ewokagram
+-- \c ewokagram
 
 INSERT INTO posts (user_id, image_url, caption, latitude, longitude)
 VALUES (1, 'marisa_and_alex.jpg', 'Bestest Friends', 40.739848, -73.990211);
