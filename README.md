@@ -8,7 +8,7 @@ This app allows the user to register an account and log in as a user. From there
 
 ## Wireframes and user stories
 
-(/client/images/ewokagram_wireframes.jpg)
+(https://git.generalassemb.ly/lickway/project2_EwokGram/blob/master/client/images/ewokagram_wireframes.jpg)
 "As an Ewok, I want to upload photos of my wire frames so I can share them with my fellow ewoks to show my success"
 "As a personal trainer, I want to share photos of my personal fitness progress so I can attract more clients"
 "As a photographer, I want a place to share my photos so that my art can be viewed by millions of people"
